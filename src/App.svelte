@@ -1,5 +1,5 @@
 <script>
-    import {Col, Row, Styles} from 'sveltestrap';
+    import {Col, Row, Styles, TabContent, TabPane} from 'sveltestrap';
     import {
         Form,
         FormGroup, Icon,
@@ -46,31 +46,35 @@
 <Styles/>
 <div class="container">
     <Row><Col sm={{ size: 6, order: 2, offset: 1 }}>
-        <Form>
-            <FormGroup>
-                <InputGroup>
-                    <InputGroupText><Icon name="bag" /></InputGroupText>
-                    <Input type="select">
-                        {#await fieldsQuery then fields}
-                            {#each fields as field}
-                                <option>{field.name}</option>
+        <InputGroup>
+            <InputGroupText><Icon name="bag" /></InputGroupText>
+            <Input type="select">
+                {#await fieldsQuery then fields}
+                    {#each fields as field}
+                        <option>{field.name}</option>
+                    {/each}
+                {/await}
+            </Input>
+        </InputGroup>
+        <TabContent>
+            <TabPane tabId="radar">
+                <span slot="tab"><Icon name="display" /> Radar</span>
+            </TabPane>
+            <TabPane tabId="evaluate" active>
+                <span slot="tab"><Icon name="pencil-square" /> Evaluate</span>
+                <FormGroup floating>
+                    <Input type="text" placeholder="Search technology to evaluate" on:input={event => searchTechnology(event.target.value)}/>
+                    <div slot="label"><Icon name="search" /> Search technology to evaluate</div>
+                    <ListGroup>
+                        {#await technologiesQuery then technologies}
+                            {#each technologies as technology}
+                                <ListGroupItem>{technology.name}</ListGroupItem>
                             {/each}
                         {/await}
-                    </Input>
-                </InputGroup>
-                <InputGroup>
-                    <InputGroupText><Icon name="search" /></InputGroupText>
-                    <Input type="text" placeholder="Search technology to evaluate" on:input={event => searchTechnology(event.target.value)}/>
-                </InputGroup>
-                <ListGroup>
-                    {#await technologiesQuery then technologies}
-                        {#each technologies as technology}
-                            <ListGroupItem>{technology.name}</ListGroupItem>
-                        {/each}
-                    {/await}
-                </ListGroup>
-            </FormGroup>
-        </Form>
+                    </ListGroup>
+                </FormGroup>
+            </TabPane>
+        </TabContent>
     </Col></Row>
 </div>
 
