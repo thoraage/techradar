@@ -57,6 +57,10 @@
             technologiesQuery = Promise.allSettled([]);
         }
     }
+
+    function createNewTechnology() {
+        console.log("Create new technology")
+    }
 </script>
 
 <Styles/>
@@ -93,9 +97,9 @@
                         {#await technologiesQuery then technologies}
                             {#if showTechnologiesList}
                                 <ListGroup>
-                                    <ListGroupItem id="new">Create new...</ListGroupItem>
-                                    {#each technologies as technology}
-                                        <ListGroupItem id={'technology_id-' + technology.id}>{technology.name}</ListGroupItem>
+                                    <ListGroupItem active on:click={() => createNewTechnology()}>Create new technology...</ListGroupItem>
+                                    {#each technologies as technology, i}
+                                        <ListGroupItem>{technology.name}</ListGroupItem>
                                     {/each}
                                 </ListGroup>
                             {/if}
