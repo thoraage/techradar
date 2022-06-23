@@ -12,31 +12,23 @@
         TabPane
     } from 'sveltestrap';
     import {
-        Form,
-        FormGroup, Icon,
+        FormGroup,
+        Icon,
         Input,
-        InputGroup,
-        InputGroupText,
         ListGroup,
         ListGroupItem
     } from 'sveltestrap';
     import {ApolloClient, InMemoryCache} from '@apollo/client';
+    import FieldSelector from './FieldSelector.svelte'
 
     const client = new ApolloClient({
         uri: 'http://localhost:8080/v1/graphql',
         cache: new InMemoryCache()
     });
-    import {setClient} from "svelte-apollo";
+    setContext("graphql-client", client);
     import {gql} from '@apollo/client';
-    import { query } from "svelte-apollo";
+    import {setContext} from "svelte";
 
-
-    // export let authToken;
-
-    // setClient(client);
-
-    const FIELDS = gql`query { technology_fields { id name description } }`;
-    const fieldsQuery = client.query({ query: FIELDS }).then(r => r.data.technology_fields);
 
     $: technologiesQuery = Promise.allSettled([]);
     let showTechnologiesList = false;
@@ -69,16 +61,7 @@
         <NavbarBrand href="/">TechRadar</NavbarBrand>
         <Nav class="ms-auto" navbar>
             <NavItem>
-                <InputGroup>
-                    <InputGroupText><Icon name="bag" /></InputGroupText>
-                    <Input type="select">
-                        {#await fieldsQuery then fields}
-                            {#each fields as field}
-                                <option>{field.name}</option>
-                            {/each}
-                        {/await}
-                    </Input>
-                </InputGroup>
+                <FieldSelector {client}/>
             </NavItem>
         </Nav>
     </Navbar>
