@@ -5,7 +5,6 @@
 
     const client = getContext('graphql-client');
 
-    console.log(client);
     const FIELDS = gql`query { technology_fields { id name description } }`;
     const fieldsQuery = client.query({ query: FIELDS }).then(r => r.data.technology_fields);
 </script>
