@@ -1,5 +1,16 @@
 <script>
-    import {Col, Row, Styles, TabContent, TabPane} from 'sveltestrap';
+    import {
+        Card,
+        Col,
+        Nav,
+        Navbar,
+        NavbarBrand,
+        NavItem,
+        Row,
+        Styles,
+        TabContent,
+        TabPane
+    } from 'sveltestrap';
     import {
         Form,
         FormGroup, Icon,
@@ -28,6 +39,7 @@
     const fieldsQuery = client.query({ query: FIELDS }).then(r => r.data.technology_fields);
 
     $: technologiesQuery = Promise.allSettled([]);
+    let showTechnologiesList = false;
 
     function searchTechnology(search) {
         if (search.length >= 1) {
@@ -36,8 +48,12 @@
             technologiesQuery = client.query({
                 query: TECHNOLOGIES,
                 variables: variables
-            }).then(r => r.data.technologies);
+            }).then(r => {
+                showTechnologiesList = true;
+                return r.data.technologies;
+            });
         } else {
+            showTechnologiesList = false;
             technologiesQuery = Promise.allSettled([]);
         }
     }
@@ -45,34 +61,47 @@
 
 <Styles/>
 <div class="container">
-    <Row><Col sm={{ size: 6, order: 2, offset: 1 }}>
-        <InputGroup>
-            <InputGroupText><Icon name="bag" /></InputGroupText>
-            <Input type="select">
-                {#await fieldsQuery then fields}
-                    {#each fields as field}
-                        <option>{field.name}</option>
-                    {/each}
-                {/await}
-            </Input>
-        </InputGroup>
+    <Navbar color="light" light expand="md">
+        <NavbarBrand href="/">TechRadar</NavbarBrand>
+        <Nav class="ms-auto" navbar>
+            <NavItem>
+                <InputGroup>
+                    <InputGroupText><Icon name="bag" /></InputGroupText>
+                    <Input type="select">
+                        {#await fieldsQuery then fields}
+                            {#each fields as field}
+                                <option>{field.name}</option>
+                            {/each}
+                        {/await}
+                    </Input>
+                </InputGroup>
+            </NavItem>
+        </Nav>
+    </Navbar>
+    <Row class="py-5"><Col sm={{ size: 6, order: 2, offset: 1 }}>
         <TabContent>
             <TabPane tabId="radar">
                 <span slot="tab"><Icon name="display" /> Radar</span>
             </TabPane>
             <TabPane tabId="evaluate" active>
                 <span slot="tab"><Icon name="pencil-square" /> Evaluate</span>
-                <FormGroup floating>
-                    <Input type="text" placeholder="Search technology to evaluate" on:input={event => searchTechnology(event.target.value)}/>
-                    <div slot="label"><Icon name="search" /> Search technology to evaluate</div>
-                    <ListGroup>
+                <Card class="py-5 px-5">
+                    <FormGroup floating>
+                        <Input type="text" placeholder="Search technology to evaluate"
+                               on:input={(event) => searchTechnology(event.target.value)}/>
+                        <div slot="label"><Icon name="search" /> Search technology to evaluate</div>
                         {#await technologiesQuery then technologies}
-                            {#each technologies as technology}
-                                <ListGroupItem>{technology.name}</ListGroupItem>
-                            {/each}
+                            {#if showTechnologiesList}
+                                <ListGroup>
+                                    <ListGroupItem id="new">Create new...</ListGroupItem>
+                                    {#each technologies as technology}
+                                        <ListGroupItem id={'technology_id-' + technology.id}>{technology.name}</ListGroupItem>
+                                    {/each}
+                                </ListGroup>
+                            {/if}
                         {/await}
-                    </ListGroup>
-                </FormGroup>
+                    </FormGroup>
+                </Card>
             </TabPane>
         </TabContent>
     </Col></Row>
