@@ -1,14 +1,8 @@
 <script>
-    import {
-        Button,
-        FormGroup,
-        Icon,
-        Input, Label,
-        ListGroup,
-        ListGroupItem, Offcanvas
-    } from 'sveltestrap';
-    import {getContext} from "svelte";
-    import {gql} from "@apollo/client";
+    import {FormGroup, Icon, Input, ListGroup, ListGroupItem} from 'sveltestrap';
+    import {getContext} from 'svelte';
+    import {gql} from '@apollo/client';
+    import NewTechnologyForm from "./NewTechnologyForm.svelte";
 
     const client = getContext('graphql-client');
 
@@ -33,22 +27,6 @@
     }
 
     let isNewTechnologyOpen = false;
-    let technologyName;
-    let technologyDescription;
-    let toggleNewTechnologyOpen = () => (isNewTechnologyOpen = !isNewTechnologyOpen);
-    let submitTechnology = () => {
-        const INSERT_TECHNOLOGY =
-            gql`mutation insert_technology($technology: technologies_insert_input!) {
-                  insert_technologies_one(object: $technology) {
-                    id
-                  }
-                }`;
-        client.mutate({ mutation: INSERT_TECHNOLOGY, variables: { technology: { name: technologyName, description: technologyDescription}}})
-            .then(r => {
-                console.log(r);
-                toggleNewTechnologyOpen = false;
-            });
-    };
 </script>
 
 <FormGroup floating>
@@ -67,19 +45,4 @@
     {/await}
 </FormGroup>
 
-<Offcanvas
-        isOpen={isNewTechnologyOpen}
-        placement="end"
-        header="Add new technology"
-        toggle={toggleNewTechnologyOpen}>
-    <FormGroup>
-        <Label for="technologyName">Name</Label>
-        <Input type="text" id="technologyName" bind:value={technologyName}/>
-    </FormGroup>
-    <FormGroup>
-        <Label for="technologyDescription">Description</Label>
-        <Input type="text" id="technologyDescription" bind:value={technologyDescription}/>
-    </FormGroup>
-    <Button color="primary" on:click={submitTechnology}><Icon name="plus-square"/> Submit</Button>
-</Offcanvas>
-
+<NewTechnologyForm bind:show={isNewTechnologyOpen}/>
