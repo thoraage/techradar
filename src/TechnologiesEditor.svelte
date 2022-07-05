@@ -1,5 +1,14 @@
 <script>
-    import {FormGroup, Icon, Input, ListGroup, ListGroupItem} from 'sveltestrap';
+    import {
+        FormGroup,
+        Icon,
+        Input,
+        ListGroup,
+        ListGroupItem,
+        Modal,
+        ModalBody,
+        ModalHeader
+    } from 'sveltestrap';
     import {getContext} from 'svelte';
     import {gql} from '@apollo/client';
     import NewTechnologyForm from "./NewTechnologyForm.svelte";
@@ -9,7 +18,7 @@
     $: technologiesQuery = Promise.allSettled([]);
     let showTechnologiesList = false;
 
-    function searchTechnology(search) {
+    const searchTechnology = (search) => {
         if (search.length >= 1) {
             const TECHNOLOGIES = gql`query ($search: String!) { technologies(where: { name: { _ilike: $search }}) { id name } }`;
             let variables = {search: "%" + search + "%"};
@@ -27,6 +36,24 @@
     }
 
     let isNewTechnologyOpen = false;
+
+    const evaluateTechnology = (technology) => {
+        currentTechnologyEvaluate = technology
+        isTechnologyEvaluateOpen = true;
+    }
+
+    let currentTechnologyEvaluate;
+    let isTechnologyEvaluateOpen = false;
+    let technologyEvaluateOpenToggle = () => (isTechnologyEvaluateOpen = !isTechnologyEvaluateOpen);
+
+    const MATURITY_VALUES = gql`query { maturity_values { id name } }`;
+    const maturityValuesQuery = client.query({ query: MATURITY_VALUES }).then(r => r.data.maturity_values);
+
+    const selectMaturityValue = maturityValueId => {
+
+        console.log("Selected: " + maturityValueId);
+        technologyEvaluateOpenToggle();
+    };
 </script>
 
 <FormGroup floating>
@@ -38,7 +65,7 @@
             <ListGroup>
                 <ListGroupItem active on:click={() => isNewTechnologyOpen = true}>Add new technology...</ListGroupItem>
                 {#each technologies as technology, i}
-                    <ListGroupItem>{technology.name}</ListGroupItem>
+                    <ListGroupItem on:click={() => evaluateTechnology(technology)}>{technology.name}</ListGroupItem>
                 {/each}
             </ListGroup>
         {/if}
@@ -46,3 +73,16 @@
 </FormGroup>
 
 <NewTechnologyForm bind:show={isNewTechnologyOpen}/>
+
+<Modal isOpen={isTechnologyEvaluateOpen} toggle={technologyEvaluateOpenToggle}>
+    <ModalHeader {isTechnologyEvaluateOpen}>{currentTechnologyEvaluate.name}</ModalHeader>
+    <ModalBody>
+        {#await maturityValuesQuery then maturityValues}
+            <FormGroup>
+                {#each maturityValues as maturityValue}
+                    <Input on:change={() => selectMaturityValue(maturityValue.id) } type="radio" value={maturityValue.id} label={maturityValue.name}/>
+                {/each}
+            </FormGroup>
+        {/await}
+    </ModalBody>
+</Modal>
