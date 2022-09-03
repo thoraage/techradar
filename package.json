@@ -12,7 +12,8 @@
     "graphql": "^16.5.0",
     "svelte": "^3.48.0",
     "svelte-apollo": "^0.5.0",
-    "sveltestrap": "^5.9.0"
+    "sveltestrap": "^5.9.0",
+    "@auth0/auth0-spa-js": "^1.15.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
