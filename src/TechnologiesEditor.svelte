@@ -1,17 +1,9 @@
 <script>
-    import {
-        FormGroup,
-        Icon,
-        Input,
-        ListGroup,
-        ListGroupItem,
-        Modal,
-        ModalBody,
-        ModalHeader
-    } from 'sveltestrap';
+    import {FormGroup, Icon, Input, ListGroup, ListGroupItem} from 'sveltestrap';
     import {getContext} from 'svelte';
     import {gql} from '@apollo/client';
     import NewTechnologyForm from "./NewTechnologyForm.svelte";
+    import TechnologyEvaluate from "./TechnologyEvaluate.svelte";
 
     const client = getContext('graphql-client');
 
@@ -45,15 +37,6 @@
     let currentTechnologyEvaluate;
     let isTechnologyEvaluateOpen = false;
     let technologyEvaluateOpenToggle = () => (isTechnologyEvaluateOpen = !isTechnologyEvaluateOpen);
-
-    const MATURITY_VALUES = gql`query { maturity_values { id name } }`;
-    const maturityValuesQuery = client.query({ query: MATURITY_VALUES }).then(r => r.data.maturity_values);
-
-    const selectMaturityValue = maturityValueId => {
-
-        console.log("Selected: " + maturityValueId);
-        technologyEvaluateOpenToggle();
-    };
 </script>
 
 <FormGroup floating>
@@ -74,15 +57,4 @@
 
 <NewTechnologyForm bind:show={isNewTechnologyOpen}/>
 
-<Modal isOpen={isTechnologyEvaluateOpen} toggle={technologyEvaluateOpenToggle}>
-    <ModalHeader {isTechnologyEvaluateOpen}>{currentTechnologyEvaluate.name}</ModalHeader>
-    <ModalBody>
-        {#await maturityValuesQuery then maturityValues}
-            <FormGroup>
-                {#each maturityValues as maturityValue}
-                    <Input on:change={() => selectMaturityValue(maturityValue.id) } type="radio" value={maturityValue.id} label={maturityValue.name}/>
-                {/each}
-            </FormGroup>
-        {/await}
-    </ModalBody>
-</Modal>
+<TechnologyEvaluate bind:show={isTechnologyEvaluateOpen} technologyEvaluate={currentTechnologyEvaluate}/>
