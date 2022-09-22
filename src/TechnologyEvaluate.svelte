@@ -2,11 +2,17 @@
     import {gql} from "@apollo/client";
     import {getContext} from "svelte";
     import {FormGroup, Input, Modal, ModalBody, ModalHeader} from "sveltestrap";
+    import {fieldIdWritable} from "./global";
 
     export let show;
     export let technologyEvaluate;
 
     const client = getContext('graphql-client');
+    let fieldId;
+    fieldIdWritable.subscribe(id => {
+        fieldId = id;
+        console.log("Updated fieldId: " + fieldId)
+    })
 
     const MATURITY_VALUES = gql`query { maturity_values { id name } }`;
     const maturityValuesQuery = client.query({ query: MATURITY_VALUES }).then(r => r.data.maturity_values);
