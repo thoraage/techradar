@@ -18,8 +18,17 @@
     const maturityValuesQuery = client.query({ query: MATURITY_VALUES }).then(r => r.data.maturity_values);
 
     const selectMaturityValue = maturityValueId => {
-        console.log("Selected: " + maturityValueId);
-        show = false;
+        const INSERT_EVALUATION =
+            gql`mutation insert_evaluation($evaluation: evaluations_insert_input!) {
+                  insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_pkey}) {
+                    id
+                  }
+                }`;
+        client.mutate({ mutation: INSERT_EVALUATION, variables: { evaluation: { technology_field_id: fieldId, technology_id: technologyEvaluate.id, maturity_value_id: maturityValueId}}})
+            .then(r => {
+                console.log(r);
+                show = false;
+            });
     };
     let technologyEvaluateOpenToggle = () => show = false;
 </script>
