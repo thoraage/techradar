@@ -41,11 +41,16 @@
     };
     const insertMaturityValue = maturityValueId => {
         const INSERT_EVALUATION =
-            gql`mutation insert_evaluation($evaluation: evaluations_insert_input!) {
-                  insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_pkey}) {
-                    id
-                  }
-                }`;
+            // gql`mutation insert_evaluation($evaluation: evaluations_insert_input!) {
+            //       insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_technology_field_id_technology_id_user_id_key, update_columns: maturity_value_id}) {
+            //         id
+            //       }
+            //     }`;
+            gql`mutation MyMutation($evaluation: evaluations_insert_input!) {
+  insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_technology_field_id_technology_id_user_id_key, update_columns: maturity_value_id}) {
+    id
+  }
+}`;
         let variables = { evaluation: { technology_field_id: fieldId, technology_id: technologyEvaluate.id, maturity_value_id: maturityValueId}};
         client.mutate({ mutation: INSERT_EVALUATION, variables: variables})
             .then(r => {
