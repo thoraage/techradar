@@ -17,12 +17,11 @@
     const maturityValuesQuery = client.query({ query: MATURITY_VALUES }).then(r => r.data.maturity_values);
 
     const GET_EVALUATION = gql`query search_user_evaluation($technology_id: Int!, $technology_field_id: Int!) {
-  evaluations(where: {technology_id: {_eq: $technology_id}, _and: {technology_field_id: {_eq: $technology_field_id}}}) {
-    id
-    maturity_value_id
-  }
-}
-`;
+          evaluations(where: {technology_id: {_eq: $technology_id}, _and: {technology_field_id: {_eq: $technology_field_id}}}) {
+            id
+            maturity_value_id
+          }
+        }`;
     let currentEvaluationId = { value: -1 };
     const getEvaluationsQuery = () => {
         const variables = { technology_field_id: fieldId, technology_id: technologyEvaluate.id };
@@ -40,6 +39,7 @@
             gql`mutation insert_evaluation($evaluation: evaluations_insert_input!) {
               insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_technology_field_id_technology_id_user_id_key, update_columns: maturity_value_id}) {
                 id
+                maturity_value_id
               }
             }`;
         let variables = { evaluation: { technology_field_id: fieldId, technology_id: technologyEvaluate.id, maturity_value_id: maturityValueId}};
