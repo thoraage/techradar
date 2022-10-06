@@ -11,7 +11,6 @@
     let fieldId;
     fieldIdWritable.subscribe(id => {
         fieldId = id;
-        console.log("Updated fieldId: " + fieldId)
     })
 
     const MATURITY_VALUES = gql`query { maturity_values { id name } }`;
@@ -29,32 +28,23 @@
         const variables = { technology_field_id: fieldId, technology_id: technologyEvaluate.id };
         return client.query({query: GET_EVALUATION, variables: variables})
             .then(r => {
-                console.log(r);
                 let evaluations = r.data.evaluations;
                 if (evaluations.length > 0) {
                     currentEvaluationId.value = evaluations[0].maturity_value_id;
-                    console.log("loaded object");
-                    console.log(currentEvaluationId);
                 }
                 return evaluations;
             });
     };
     const insertMaturityValue = maturityValueId => {
         const INSERT_EVALUATION =
-            // gql`mutation insert_evaluation($evaluation: evaluations_insert_input!) {
-            //       insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_technology_field_id_technology_id_user_id_key, update_columns: maturity_value_id}) {
-            //         id
-            //       }
-            //     }`;
-            gql`mutation MyMutation($evaluation: evaluations_insert_input!) {
-  insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_technology_field_id_technology_id_user_id_key, update_columns: maturity_value_id}) {
-    id
-  }
-}`;
+            gql`mutation insert_evaluation($evaluation: evaluations_insert_input!) {
+              insert_evaluations_one(object: $evaluation, on_conflict: {constraint: evaluations_technology_field_id_technology_id_user_id_key, update_columns: maturity_value_id}) {
+                id
+              }
+            }`;
         let variables = { evaluation: { technology_field_id: fieldId, technology_id: technologyEvaluate.id, maturity_value_id: maturityValueId}};
         client.mutate({ mutation: INSERT_EVALUATION, variables: variables})
             .then(r => {
-                console.log(r);
                 show = false;
             });
     };
