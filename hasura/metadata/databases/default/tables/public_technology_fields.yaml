@@ -1,0 +1,11 @@
+table:
+  name: technology_fields
+  schema: public
+select_permissions:
+  - role: unauthorized
+    permission:
+      columns:
+        - id
+        - description
+        - name
+      filter: {}

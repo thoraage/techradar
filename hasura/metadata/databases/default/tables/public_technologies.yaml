@@ -1,0 +1,19 @@
+table:
+  name: technologies
+  schema: public
+insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      columns:
+        - id
+        - description
+        - name
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - description
+        - name
+      filter: {}

@@ -1,0 +1,10 @@
+table:
+  name: maturity_values
+  schema: public
+select_permissions:
+  - role: unauthorized
+    permission:
+      columns:
+        - id
+        - name
+      filter: {}
