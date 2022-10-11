@@ -12,7 +12,7 @@
         const INSERT_TECHNOLOGY =
             gql`mutation insert_technology($technology: technologies_insert_input!) {
                   insert_technologies_one(object: $technology) {
-                    id
+                    id name
                   }
                 }`;
         client.mutate({ mutation: INSERT_TECHNOLOGY, variables: { technology: { name: technologyName, description: technologyDescription}}})

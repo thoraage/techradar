@@ -16,7 +16,8 @@
             let variables = {search: "%" + search + "%"};
             technologiesQuery = client.query({
                 query: TECHNOLOGIES,
-                variables: variables
+                variables: variables,
+                fetchPolicy: 'network-only'
             }).then(r => {
                 showTechnologiesList = true;
                 return r.data.technologies;
