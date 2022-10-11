@@ -1,6 +1,13 @@
 table:
   name: evaluations
   schema: public
+object_relationships:
+  - name: maturity_value
+    using:
+      foreign_key_constraint_on: maturity_value_id
+  - name: technology
+    using:
+      foreign_key_constraint_on: technology_id
 insert_permissions:
   - role: user
     permission:

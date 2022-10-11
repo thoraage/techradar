@@ -18,6 +18,7 @@
     import {onMount, setContext} from "svelte";
     import {authenticateIfNot, getUser, logout, createClient} from './auth';
     import {onError} from "@apollo/client/link/error";
+    import TechnologiesRadar from "./TechnologiesRadar.svelte";
 
     let user = null;
     let accessToken = null;
@@ -39,6 +40,11 @@
     onMount(async () => {
         user = await getUser(token => accessToken = token);
     });
+    let technologiesRadarVisible = false;
+    const setTechnologiesRadarVisible = (visible) => {
+        console.log("clicked: " + visible);
+        technologiesRadarVisible = visible;
+    }
 </script>
 
 <Styles/>
@@ -59,7 +65,10 @@
     <Row class="py-5"><Col sm={{ size: 6, order: 2, offset: 1 }}>
         <TabContent>
             <TabPane tabId="radar">
-                <span slot="tab"><Icon name="display" /> Radar</span>
+                <span slot="tab" on:click={() => setTechnologiesRadarVisible(true)}><Icon name="display" /> Radar</span>
+                <Card class="py-5 px-5">
+                    <TechnologiesRadar visible={technologiesRadarVisible}/>
+                </Card>
             </TabPane>
             <TabPane tabId="evaluate" active>
                 <span slot="tab"><Icon name="pencil-square" /> Evaluate</span>
