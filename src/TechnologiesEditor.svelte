@@ -28,6 +28,7 @@
     }
 
     let isNewTechnologyOpen = false;
+    let technologyName;
 
     const evaluateTechnology = (technology) => {
         currentTechnologyEvaluate = technology
@@ -40,7 +41,7 @@
 </script>
 
 <FormGroup floating>
-    <Input type="text" placeholder="Search technology to evaluate"
+    <Input type="text" placeholder="Search technology to evaluate" bind:value={technologyName}
            on:input={(event) => searchTechnology(event.target.value)}/>
     <div slot="label"><Icon name="search" /> Search technology to evaluate</div>
     {#await technologiesQuery then technologies}
@@ -55,6 +56,6 @@
     {/await}
 </FormGroup>
 
-<NewTechnologyForm bind:show={isNewTechnologyOpen}/>
+<NewTechnologyForm bind:show={isNewTechnologyOpen} {technologyName}/>
 
 <TechnologyEvaluate bind:show={isTechnologyEvaluateOpen} technologyEvaluate={currentTechnologyEvaluate}/>

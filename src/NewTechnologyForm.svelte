@@ -21,7 +21,7 @@
                 show = false;
             });
     };
-    let technologyName;
+    export let technologyName;
     let technologyDescription;
 </script>
 
